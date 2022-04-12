@@ -1,1 +1,86 @@
-// TODO
+.banner{
+  width: 100%;
+  height: 25rem;
+  object-fit: cover;
+}
+.modifiedAt{
+  padding-top: 1rem;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--info);
+}
+.containerLoading{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .imgPlaceholder{
+    width: 100%;
+    height: 25rem;
+    background-color: var(--info);
+    margin-bottom: 2rem;
+  }
+  .loading{
+    font-size: 1.5rem;
+  }
+}
+.post{
+  h1{
+    font-size: 2.9rem;
+    color: var(--heading);
+    margin-bottom: 1.8rem;
+  }
+
+  article{
+    padding-top: 4rem;
+    h2{
+      font-size:2.25rem;
+      color: var(--heading);
+      margin-bottom: 3.87rem;
+    }
+    p, span, a{
+      font-size:1.125rem;
+      line-height: 1.8;
+      margin: 1.8rem 0;
+    }
+  }
+}
+
+.navigation {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top: 2px solid #d7d7d710;
+
+
+  h3{
+    font-size:1.125rem;
+    font-weight: 400;
+    color:var(--heading);
+    margin-bottom:0.5rem;
+    max-width: 18rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  a {
+    color:var(--highlight);
+    font-weight:600;
+  }
+
+  div {
+    padding-top: 3rem;
+
+  }
+  .onlyNext{
+    margin-left: auto;
+    text-align: right;
+  }
+
+  div:nth-child(2){
+    text-align: right;
+  }
+
+
+}

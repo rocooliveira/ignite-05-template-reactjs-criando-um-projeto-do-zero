@@ -1,1 +1,30 @@
-// TODO
+.posts{
+    article{
+        display: block;
+        h1{
+            font-size: 1.813rem;
+        }
+        p{
+            margin: .5rem auto 1.5rem;
+        }
+
+    }
+
+    article + article {
+        margin-top: 3rem;
+    }
+
+    button{
+
+        border: none;
+        background: transparent;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--highlight);
+        margin-top: 4rem;
+      &:hover{
+        opacity: .8;
+        transition: .5s;
+      }
+    }
+}
