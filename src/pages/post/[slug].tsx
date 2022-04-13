@@ -1,8 +1,9 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom'
-
+import Prismic from '@prismicio/client';
 import { getPrismicClient } from '../../services/prismic';
+
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR'
 
@@ -17,7 +18,7 @@ import Link from 'next/link';
 interface Post {
   uid: string;
   first_publication_date: string | null;
-  last_publication_date: string | null;
+  // last_publication_date: string | null;
   data: {
     title: string;
     subtitle: string;
@@ -50,10 +51,10 @@ interface PostProps {
   //     };
   //   }[];
   // }
-  preview: boolean;
+  // preview: boolean;
 }
 
-export default function Post({post, /*navigation,*/ preview = false}:PostProps) {
+export default function Post({post, /*navigation, preview = false*/}:PostProps) {
 
   const router = useRouter();
 
@@ -128,101 +129,184 @@ export default function Post({post, /*navigation,*/ preview = false}:PostProps) 
           )} */}
         </section>
 
-        {preview && (
+        {/* {preview && (
           <div className={commonStyles.previewButton}>
             <Link href="/api/exit-preview">
               <a>Sair do modo Preview</a>
             </Link>
           </div>
-        )}
+        )} */}
       </div>
     </>
   );
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const client = getPrismicClient();
+  /*
+  -----------------------------------------------------------------------------------------
+  ALTERADO PARA VERSAO ANTIGA DO PRISMIC PARA PASSAR NO TESTE DA ROCKETSEAT QUE NAO USA
+  A VERSAO ATUALIZADA. VERSAO ATUALIZADA USADA NA BRANCH DE DEV NO EXERCICIO COMPLEMENTAR
+  -----------------------------------------------------------------------------------------
+  */
+  // const client = getPrismicClient();
+  // const posts = await client.getAllByType('post');
 
-  const posts = await client.getAllByType('post');
+  // const paths = posts.map( item => {
+  //   return {params: {slug: item.uid}}
+  // });
 
-  const paths = posts.map( item => {
-    return {params: {slug: item.uid}}
+  // return {
+  //   paths,
+  //   fallback: true
+  // };
+
+  const prismic = getPrismicClient();
+  const posts = await prismic.query([
+    Prismic.Predicates.at('document.type', 'posts'),
+  ]);
+
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
   });
 
   return {
     paths,
-    fallback: 'blocking'
+    fallback: true,
   };
 
 };
 
 export const getStaticProps: GetStaticProps = async ({params, previewData, preview = false}) => {
-  const {slug} = params;
-  const client = getPrismicClient({previewData});
+  /*
+  -----------------------------------------------------------------------------------------
+  ALTERADO PARA VERSAO ANTIGA DO PRISMIC PARA PASSAR NO TESTE DA ROCKETSEAT QUE NAO USA
+  A VERSAO ATUALIZADA. VERSAO ATUALIZADA USADA NA BRANCH DE DEV NO EXERCICIO COMPLEMENTAR
+  -----------------------------------------------------------------------------------------
+  */
+  // const {slug} = params;
+  // const client = getPrismicClient({previewData});
 
-  try {
+  // try {
 
-    const response = await client.getByUID('post', String(slug), {
-      ref: previewData?.ref ?? null
-    });
+  //   const response = await client.getByUID('post', String(slug), {
+  //     ref: previewData?.ref ?? null
+  //   });
 
-    const notFound = response ? false : true;
+  //   const notFound = response ? false : true;
 
-    // const prevPost = await client.getAllByType('post',{
-    //   pageSize: 1,
-    //   after: response?.id,
-    //   orderings: {
-    //     field: 'document.first_publication_date',
-    //     direction: 'asc',
-    //   }
-    // });
+  //   // const prevPost = await client.getAllByType('post',{
+  //   //   pageSize: 1,
+  //   //   after: response?.id,
+  //   //   orderings: {
+  //   //     field: 'document.first_publication_date',
+  //   //     direction: 'asc',
+  //   //   }
+  //   // });
 
-    // const nextPost = await client.getAllByType('post',{
-    //   pageSize: 1,
-    //   after: response?.id,
-    //   orderings: {
-    //     field: 'document.first_publication_date',
-    //     direction: 'desc',
-    //   }
-    // })
+  //   // const nextPost = await client.getAllByType('post',{
+  //   //   pageSize: 1,
+  //   //   after: response?.id,
+  //   //   orderings: {
+  //   //     field: 'document.first_publication_date',
+  //   //     direction: 'desc',
+  //   //   }
+  //   // })
 
-    const post = {
-      uid: response.uid,
-      first_publication_date: response.first_publication_date,
-      last_publication_date: response.last_publication_date,
-      data: {
-        title: response.data.title,
-        subtitle: response.data.subtitle,
-        banner: {
-          url: response.data.banner.url,
-        },
-        author: response.data.author,
-        content: response.data.content.map( item => {
-          return{
-            heading: item.heading,
-            body: [...item.body]
-          }
-        })
-      }
+  //   const post = {
+  //     uid: response.uid,
+  //     first_publication_date: response.first_publication_date,
+  //     // last_publication_date: response.last_publication_date,
+  //     data: {
+  //       title: response.data.title,
+  //       subtitle: response.data.subtitle,
+  //       banner: {
+  //         url: response.data.banner.url,
+  //       },
+  //       author: response.data.author,
+  //       content: response.data.content.map( item => {
+  //         return{
+  //           heading: item.heading,
+  //           body: [...item.body]
+  //         }
+  //       })
+  //     }
+  //   }
+
+  //   return{
+  //     props: {
+  //       post,
+  //       preview,
+  //       // navigation:{
+  //       //   prevPost,
+  //       //   nextPost
+  //       // }
+  //     },
+  //     revalidate: 60,
+  //     notFound
+  //   }
+  // } catch (error) {
+  //   console.log(error);
+  //   return{
+
+  //     notFound: true
+  //   }
+  // }
+  const prismic = getPrismicClient();
+  const { slug } = params;
+  const response = await prismic.getByUID('post', String(slug), {
+    ref: previewData?.ref || null,
+  });
+
+  const prevPost = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'post')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.first_publication_date]',
     }
+  );
 
-    return{
-      props: {
-        post,
-        preview,
-        // navigation:{
-        //   prevPost,
-        //   nextPost
-        // }
+  const nextPost = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'post')],
+    {
+      pageSize: 1,
+      after: response.id,
+      orderings: '[document.last_publication_date desc]',
+    }
+  );
+
+  const post = {
+    uid: response.uid,
+    first_publication_date: response.first_publication_date,
+    data: {
+      title: response.data.title,
+      subtitle: response.data.subtitle,
+      author: response.data.author,
+      banner: {
+        url: response.data.banner.url,
       },
-      revalidate: 60,
-      notFound
-    }
-  } catch (error) {
-    console.log(error);
-    return{
+      content: response.data.content.map(content => {
+        return {
+          heading: content.heading,
+          body: [...content.body],
+        };
+      }),
+    },
+  };
 
-      notFound: true
-    }
-  }
+  return {
+    props: {
+      post,
+      navigation: {
+        prevPost: prevPost?.results,
+        nextPost: nextPost?.results,
+      },
+      preview,
+    },
+    revalidate: 60,
+  };
 };

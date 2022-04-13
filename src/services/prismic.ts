@@ -1,13 +1,14 @@
+/*
+-----------------------------------------------------------------------------------------
+ALTERADO PARA VERSAO ANTIGA DO PRISMIC PARA PASSAR NO TESTE DA ROCKETSEAT QUE NAO USA
+A VERSAO ATUALIZADA. VERSAO ATUALIZADA USADA NA BRANCH DE DEV NO EXERCICIO COMPLEMENTAR
+-----------------------------------------------------------------------------------------
+
 import * as prismic from '@prismicio/client';
 import { enableAutoPreviews } from '@prismicio/next';
-// import sm from './sm.json'
 
 export const endpoint = process.env.PRISMIC_API_ENDPOINT;//'https://blogrocotest2.prismic.io/api/v2';
 
-// export const repositoryName = prismic.getRepositoryName(endpoint)
-
-
-// Update the Link Resolver to match your project's route structure
 export function linkResolver(doc: any = {}) {
   if (doc.type === 'post') {
     return `/post/${doc.uid}`;
@@ -28,4 +29,16 @@ export function getPrismicClient(config: any = {}) {
   })
 
   return client;
+}
+*/
+import Prismic from '@prismicio/client';
+import { DefaultClient } from '@prismicio/client/types/client';
+
+export function getPrismicClient(req?: unknown): DefaultClient {
+  const prismic = Prismic.client(process.env.PRISMIC_API_ENDPOINT, {
+    req,
+    accessToken: process.env.PRISMIC_ACCESS_TOKEN,
+  });
+
+  return prismic;
 }

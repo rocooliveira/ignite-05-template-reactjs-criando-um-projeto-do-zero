@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Head from "next/head";
 import Link from "next/link";
 
-import { getPrismicClient } from '../services/prismic';
+import Prismic from '@prismicio/client';
 
+import { getPrismicClient } from '../services/prismic';
 
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
@@ -116,9 +117,23 @@ export default function Home({postsPagination, preview=false}: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async ({ previewData, preview = false }) => {
 
-  const client = getPrismicClient({previewData});
+  /*
+  -----------------------------------------------------------------------------------------
+  ALTERADO PARA VERSAO ANTIGA DO PRISMIC PARA PASSAR NO TESTE DA ROCKETSEAT QUE NAO USA
+  A VERSAO ATUALIZADA. VERSAO ATUALIZADA USADA NA BRANCH DE DEV NO EXERCICIO COMPLEMENTAR
+  -----------------------------------------------------------------------------------------
+  */
+  // const client = getPrismicClient({previewData});
+  // const postsResponse = await client.getByType('post',{pageSize: 1})
+  const prismic = getPrismicClient();
 
-  const postsResponse = await client.getByType('post', {pageSize: 1})
+  const postsResponse = await prismic.query(
+    [Prismic.Predicates.at('document.type', 'post')],
+    {
+      pageSize: 1,
+      orderings: '[document.last_publication_date desc]',
+    }
+  );
 
   const postsData = postsResponse.results.map( post => {
 
@@ -136,14 +151,14 @@ export const getStaticProps: GetStaticProps = async ({ previewData, preview = fa
 
   const postsPagination = {
     next_page: postsResponse.next_page,
-    results: postsData
+    results: postsData,
   };
 
   return {
     props: {
       postsPagination,
-      preview
-    }
+      preview,
+    },
+    revalidate: 1800,
   };
-
 };
